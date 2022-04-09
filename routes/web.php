@@ -20,12 +20,15 @@ Route::get('/', function () {
 
 // Route::get('/producto', function () {
 //     return view('producto');
-// });
-
-
-Route::get('/products',[ProductController::class,'show']);
+// }
 
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::group(['middleware' => 'auth'], function() {
+    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+    Route::get('/products',[ProductController::class,'index'])->name('product.index');
+    Route::get('/products/create',[ProductController::class,'create'])->name('product.create');
+    Route::post('/products/store',[ProductController::class,'store'])->name('product.store');
+    Route::delete('products/delete/{product}', [ProductController::class,'destroy'])->name('product.delete');
+});
