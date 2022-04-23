@@ -38,9 +38,30 @@
                                 <br />
                             @enderror
                         </div>
+                        <label for="">Precio</label>
+                        <div class="col-md-6">
+                            <input type="text" name="precio" id="product_name" class="form-control"
+                                placeholder="Precio" value="{{ old('precio') }}">
+                            @error('precio')
+                                <br />
+                                <span class="text-danger fw-bold">{{ $message }}</span>
+                                <br />
+                            @enderror
+                        </div>
+                        <label for="">Código de Barrra</label>
+                        <div class="col-md-6">
+                            <input type="text" name="codigo_barra" id="codigo_barra" class="form-control"
+                                placeholder="Código de Barra" value="{{ old('codigo_barra') }}">
+                            @error('codigo_barra')
+                                <br />
+                                <span class="text-danger fw-bold">{{ $message }}</span>
+                                <br />
+                            @enderror
+                        </div>
                     </div>
                     <div class="row-mb-0"></div>
                     <div class="form-group">
+                        <a href="{{ route('product.index') }}" class="btn btn-danger mr-5">Atrás</a>
                         <input type="submit" class="btn btn-primary" value="Agregar producto">
                     </div>
                 </form>

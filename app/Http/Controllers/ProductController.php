@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Supplier;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
@@ -30,9 +31,9 @@ class ProductController extends Controller
 
         $product = new Product();
         $product->product_name = $request->product_name;
-        $product->price = 8.50;
-        $product->barcode = 12658988;
-        $product->user_id = 1;
+        $product->price = $request->precio;
+        $product->barcode = $request->codigo_barra;
+        $product->user_id = Auth::user()->id;
         $product->supplier_id = $request->supplier_id;
 
         $product->save();

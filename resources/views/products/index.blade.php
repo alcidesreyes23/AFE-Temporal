@@ -8,10 +8,6 @@
     </style>
 @endsection
 
-@section('buttons')
-    <a href="{{ route('product.create') }}" class="btn btn-primary mr-2">Agregar producto</a>
-@endsection
-
 @section('content')
     <div class="card">
         <div class="card-header">Productos</div>
@@ -22,6 +18,9 @@
             @endcomponent
 
             <div class="col-md-10 mx-auto bg-white p-3">
+                <div class="d-flex flex-row-reverse">
+                    <a href="{{ route('product.create') }}" class="btn btn-primary mr-2 my-2">Agregar producto</a>
+                </div>
                 <table class="table">
                     <thead class="bg-primary text-light">
                         <tr>
