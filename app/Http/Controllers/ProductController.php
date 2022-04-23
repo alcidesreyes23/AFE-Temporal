@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Supplier;
 use Illuminate\Support\Facades\Auth;
+use Intervention\Image\Facades\Image;
 
 class ProductController extends Controller
 {
@@ -26,13 +27,15 @@ class ProductController extends Controller
         $this->validate($request,[
             'product_name' => 'required',
         ],[],['product_name' => 'Nombre del producto']);
-        //dd($request->all());
-
-
+        $ruta_image = $request['image']->store('products-images','public');
+        $img = Image::make( public_path("storage/{$ruta_image}"))->fit(1000,550);
+        $img->save();
+        
         $product = new Product();
         $product->product_name = $request->product_name;
         $product->price = $request->precio;
         $product->barcode = $request->codigo_barra;
+        $product->image = $ruta_image;
         $product->user_id = Auth::user()->id;
         $product->supplier_id = $request->supplier_id;
 

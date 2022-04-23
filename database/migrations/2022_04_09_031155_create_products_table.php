@@ -17,7 +17,8 @@ return new class extends Migration
             $table->id();
             $table->string('product_name');
             $table->double('price',8,2)->nullable();
-            $table->integer('barcode')->nullable();;
+            $table->integer('barcode')->nullable();
+            $table->string('image')->nullable();
             $table->foreignId('supplier_id')->references('id')->on('suppliers')->comments('Relacion con tabla Suppliers');
             $table->foreignId('user_id')->references('id')->on('users')->comments('Relacion con tabla Usuarios')->default(1);
             $table->softDeletes();

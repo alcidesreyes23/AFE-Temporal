@@ -9,7 +9,8 @@
         <div class="card-header">Agregar Producto</div>
         <div class="card-body">
             <div class="col-md-10 mx-auto bg-white p-3">
-                <form method="POST" action="{{ route('product.store') }}" novalidate>
+                <form method="POST" action="{{ route('product.store') }}" novalidate
+                enctype="multipart/form-data">
                     @csrf
                     <div class="row mb-3">
                         <label for="">Proveedor</label>
@@ -53,6 +54,16 @@
                             <input type="text" name="codigo_barra" id="codigo_barra" class="form-control"
                                 placeholder="Código de Barra" value="{{ old('codigo_barra') }}">
                             @error('codigo_barra')
+                                <br />
+                                <span class="text-danger fw-bold">{{ $message }}</span>
+                                <br />
+                            @enderror
+                        </div>
+                        <label for="">Seleccione una imagen</label>
+                        <div class="col-md-6">
+                            <input type="file" name="image" id="image" class="form-control"
+                                placeholder="Seleccione una imagen" value="{{ old('image') }}">
+                            @error('image')
                                 <br />
                                 <span class="text-danger fw-bold">{{ $message }}</span>
                                 <br />

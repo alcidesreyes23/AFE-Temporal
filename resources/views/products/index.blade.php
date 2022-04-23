@@ -56,7 +56,7 @@
                         @endforeach
                     </tbody>
                 </table>
-                @if ($products->count())
+                @if (!$products->count())
                     <h6 class="text-muted">No hay registro de productos</h6>
                 @endif
             </div>
