@@ -25,11 +25,11 @@
                     <thead class="bg-primary text-light">
                         <tr>
                             <th scole="col">Codigo</th>
-                            <th scole="col">Proveedor</th>
-                            <th scole="col">Usuario</th>
                             <th scole="col">Nombre</th>
                             <th scole="col">Precio</th>
                             <th scole="col">Código de barras</th>
+                            <th scole="col">Proveedor</th>
+                            <th scole="col">Usuario</th>
                             <th scole="col">Acciones</th>
                         </tr>
                     </thead>

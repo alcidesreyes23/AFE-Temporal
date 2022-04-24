@@ -10,46 +10,59 @@ use Intervention\Image\Facades\Image;
 
 class ProductController extends Controller
 {
+
+    protected array $rules = [
+        'product_name' => ['required', 'min:5', 'max:50'],
+        'price' => ['required','numeric'],
+        'barcode' => ['required', 'min:5', 'max:8'],
+        'image' => ['required', 'image','mimes:jpg,png','max:1024'],
+        'supplier_id' => 'required'
+    ];
+
+    protected array $customAttributes = [
+        'product_name' => 'Nombre de producto',
+        'price' => 'Precio',
+        'barcode' => 'Código de barras',
+        'image' => 'Imagen',
+        'supplier_id' => 'Proveedor',
+    ];
+
     public function index()
     {
-        $products = Product::all();
-        return view('products.index',compact('products'));
+        $products = auth()->user()->products;
+        return view('products.index', compact('products'));
     }
 
     public function create()
     {
-        $suppliers = Supplier::all()->pluck('supplier_name','id');
-        return view('products.create',compact('suppliers'));
+        $suppliers = Supplier::all()->pluck('supplier_name', 'id');
+        return view('products.create', compact('suppliers'));
     }
 
     public function store(Request $request)
     {
-        $this->validate($request,[
-            'product_name' => 'required',
-        ],[],['product_name' => 'Nombre del producto']);
-        $ruta_image = $request['image']->store('products-images','public');
-        $img = Image::make( public_path("storage/{$ruta_image}"))->fit(1000,550);
-        $img->save();
-        
-        $product = new Product();
-        $product->product_name = $request->product_name;
-        $product->price = $request->precio;
-        $product->barcode = $request->codigo_barra;
-        $product->image = $ruta_image;
-        $product->user_id = Auth::user()->id;
-        $product->supplier_id = $request->supplier_id;
-
-        $product->save();
-
-        // Product::create($request->all());
-        session()->flash('success','Producto agregado exitosamente');
-        return redirect()->route('product.index');
+        try {
+            $values = $this->validate($request,$this->rules, [], $this->customAttributes);
+            $values['image'] = $request['image']->store('products-images', 'public');
+            $img = Image::make(public_path("storage/{$values['image']}"))->fit(1000, 550);
+            $img->save();
+            auth()->user()->products()->create($values);
+            session()->flash('success', 'Producto agregado exitosamente');
+            return redirect()->route('product.index');
+        } catch (\Illuminate\Validation\ValidationException $ve) {
+            session()->flash('error', 'Verifique que todos los campos hayan sido completados, por favor.');
+            $this->validate($request,$this->rules, [], $this->customAttributes);
+        }
+        catch (\Throwable $th) {
+            session()->flash('error', 'Parece que hubo un error, intentelo más tarde.');
+            return redirect()->back();
+        }
     }
 
     public function destroy(Product $product)
     {
         $product->delete();
-        session()->flash('success','Producto eliminado exitosamente');
+        session()->flash('success', 'Producto eliminado exitosamente');
         return redirect()->route('product.index');
     }
 }
