@@ -11,8 +11,9 @@
             <div class="col-md-10 mx-auto bg-white p-3">
                 @component('components.alerts')
                 @endcomponent
-                <form method="POST" action="{{ route('product.store') }}" novalidate
-                enctype="multipart/form-data">
+                <form method="POST" action="{{ route('product.update', ['product' => $product, 'op' => $param]) }}"
+                    novalidate enctype="multipart/form-data">
+                    @method('put')
                     @csrf
                     <div class="row mb-3">
                         <div class="col-md-6">
@@ -22,7 +23,8 @@
                                     value="{{ old('supplier_id') }}">
                                     <option value="">Seleccione proveedor</option>
                                     @foreach ($suppliers as $id => $name)
-                                        <option value="{{ $id }}">
+                                        <option value="{{ $id }}"
+                                            {{ $product->supplier_id == $id ? 'selected' : '' }}>
                                             {{ $name }}</option>
                                     @endforeach
                                 </select>
@@ -33,7 +35,7 @@
                             <div class="col-md-12 mb-3">
                                 <label for="">Titulo del producto</label>
                                 <input type="text" name="product_name" id="product_name" class="form-control"
-                                    placeholder="Nombre del producto" value="{{ old('product_name') }}">
+                                    placeholder="Nombre del producto" value="{{ $product->product_name }}">
                                 @error('product_name')
                                     <span class="text-danger">{{ $message }}</span>
                                 @enderror
@@ -41,7 +43,7 @@
                             <div class="col-md-12 mb-3">
                                 <label for="">Precio</label>
                                 <input type="text" name="price" id="price" class="form-control" placeholder="Precio"
-                                    value="{{ old('price') }}">
+                                    value="{{ $product->price }}">
                                 @error('price')
                                     <span class="text-danger">{{ $message }}</span>
                                 @enderror
@@ -49,7 +51,7 @@
                             <div class="col-md-12 mb-3">
                                 <label for="">Código de Barrra</label>
                                 <input type="text" name="barcode" id="barcode" class="form-control"
-                                    placeholder="Código de Barra" value="{{ old('barcode') }}">
+                                    placeholder="Código de Barra" value="{{ $product->barcode }}">
                                 @error('barcode')
                                     <span class="text-danger">{{ $message }}</span>
                                 @enderror
@@ -64,22 +66,28 @@
                             </div>
                         </div>
                         <div class="col-md-6 ">
+                            <label for="">Imagen actual del producto</label>
+                            <img src="{{ asset('storage/' . $product->image) }}" class="w-75 img-thumbnail"
+                                alt="{{ $product->product_name }}">
+                            <br /><br />
                             <div id="newImage" hidden>
-                                <label for="img_product">Imagen del producto</label>
+                                <label for="img_product">Nueva imagen del producto</label>
                                 <img id="img_product" src="#" class="w-75 img-thumbnail"
-                                    alt="Imagen del producto">
+                                    alt="{{ $product->product_name }}">
                             </div>
                         </div>
                     </div>
                     <div class="form-group">
-                        <a href="{{ route('product.index') }}" class="btn btn-danger mr-5">Atrás</a>
-                        <input type="submit" class="btn btn-primary" value="Agregar producto">
+                        <a href="{{ $param ? route('product.show', $product) : route('product.index') }}"
+                            class="btn btn-danger mr-5">Atrás</a>
+                        <input type="submit" class="btn btn-primary" value="Actualizar producto">
                     </div>
                 </form>
             </div>
         </div>
     </div>
 @endsection
+
 @section('js')
     <script type="application/javascript">
         $(document).ready(function() {

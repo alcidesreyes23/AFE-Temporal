@@ -25,10 +25,15 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::group(['middleware' => 'auth'], function() {
+Route::group(['middleware' => 'auth'], function () {
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-    Route::get('/products',[ProductController::class,'index'])->name('product.index');
-    Route::get('/products/create',[ProductController::class,'create'])->name('product.create');
-    Route::post('/products/store',[ProductController::class,'store'])->name('product.store');
-    Route::delete('products/delete/{product}', [ProductController::class,'destroy'])->name('product.delete');
+    Route::group(['prefix' => 'productos','as' => 'product.'], function () {
+        Route::get('/', [ProductController::class, 'index'])->name('index');
+        Route::get('/create', [ProductController::class, 'create'])->name('create');
+        Route::post('/store', [ProductController::class, 'store'])->name('store');
+        Route::get('/{product}', [ProductController::class, 'show'])->name('show');
+        Route::get('/{product}/edit', [ProductController::class, 'edit'])->name('edit');
+        Route::put('/{product}', [ProductController::class, 'update'])->name('update');
+        Route::delete('/delete/{product}', [ProductController::class, 'destroy'])->name('delete');
+    });
 });

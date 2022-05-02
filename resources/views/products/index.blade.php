@@ -5,6 +5,7 @@
         .badge {
             cursor: pointer;
         }
+
     </style>
 @endsection
 
@@ -13,10 +14,8 @@
         <div class="card-header">Productos</div>
         <div class="card-body">
             <h3>Administración de productos</h3>
-
             @component('components.alerts')
             @endcomponent
-
             <div class="col-md-10 mx-auto bg-white p-3">
                 <div class="d-flex flex-row-reverse">
                     <a href="{{ route('product.create') }}" class="btn btn-primary mr-2 my-2">Agregar producto</a>
@@ -36,21 +35,27 @@
                     <tbody>
                         @foreach ($products as $item)
                             <tr>
-                                <td>{{$item->id}}</td>
-                                <td>{{$item->supplier->supplier_name}}</td>
-                                <td>{{$item->user->name}}</td>
-                                <td>{{$item->product_name}}</td>
-                                <td>${{ number_format($item->price,2)}}</td>
-                                <td>{{$item->barcode}}</td>
+                                <td>{{ $item->id }}</td>
+                                <td>{{ $item->supplier->supplier_name }}</td>
+                                <td>{{ $item->user->name }}</td>
+                                <td>{{ $item->product_name }}</td>
+                                <td>${{ number_format($item->price, 2) }}</td>
+                                <td>{{ $item->barcode }}</td>
                                 <td>
-                                    <span class="badge bg-primary rounded-pill">Editar</span>
-                                    <form class="d-inline" action="{{route('product.delete',['product' => $item])}}" method="POST">
+                                    <a href="{{ route('product.edit', $item) }}">
+                                        <span class="badge bg-primary rounded-pill">Editar</span>
+                                    </a>
+                                    <form class="d-inline"
+                                        action="{{ route('product.delete', ['product' => $item]) }}" method="POST">
                                         @csrf
                                         @method('delete')
-                                        <button type="submit" class="btn">
-                                            <span class="badge bg-danger rounded-pill">Delete</span>
-                                        </button>
+                                        <input name="_method" type="hidden" value="DELETE">
+                                        <button type="submit" class="badge bg-danger rounded-pill show_confirm border-0"
+                                            data-toggle="tooltip" title='Delete'>Delete</button>
                                     </form>
+                                    <a href="{{ route('product.show', $item) }}">
+                                        <span class="badge bg-secondary rounded-pill">Detalles</span>
+                                    </a>
                                 </td>
                             </tr>
                         @endforeach
@@ -65,4 +70,22 @@
 @endsection
 
 @section('js')
+    <script type="application/javascript">
+        $('.show_confirm').click(function(event) {
+            var form = $(this).closest("form");
+            var name = $(this).data("name");
+            event.preventDefault();
+            Swal.fire({
+                icon: 'question',
+                title: '¿Desea eliminar el registro?',
+                showCancelButton: true,
+                confirmButtonText: 'Eliminar',
+                cancelButtonText:'Cancelar',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            })
+        });
+    </script>
 @endsection
